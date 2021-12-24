@@ -1,0 +1,446 @@
+float carAngle = 3*PI/4;
+float carLocationX  = 125; 
+float carLocationY = 125; 
+float carAngle2 = 3*PI/4;
+float carLocationX2  = 175; 
+float carLocationY2 = 175; 
+float carLocationDriftX2  = 0; 
+float carLocationDriftY2 = 0; 
+float carLocationDriftX  = 0; 
+float carLocationDriftY = 0; 
+PImage car;
+PImage car2;
+PImage ammoImage;
+PImage ammoImage2;
+PImage ammoBase;
+color c;
+color a;
+color b;
+color d;
+float ticker = 40;
+float ticker2 = 40;
+int t1 = 0;
+int t2 = 0;
+int laserT = 0;
+float laserX = -100000;
+float laserY = -100000;
+float laserR = PI;
+int laserT2 = 0;
+float laserX2 = -100000;
+float laserY2 = -100000;
+float laserR2 = PI;
+int beenhit = -1;
+int beenhit2 = -1;
+int killCountPink = 0;
+int killCountRed = 0;
+int checkPoint1 = 0;
+int checkPoint2 = 0;
+int checkPoint12 = 0;
+int checkPoint22 = 0;
+int lasersAvailable = 0;
+int lasersAvailable2 = 0;
+float car1HeatX1;
+float car1HeatX2;
+float car1HeatX3;
+float car1HeatX4;
+PImage ghost;
+float ghostX = 275;
+float ghostY = 250;
+float ghostTransparency = 0;
+float ghostDirection;
+int optionForGhost = 0;
+int bgcolorUse = 0;
+
+void setup() {
+    size(600, 600);
+    car = loadImage("61201.png");
+    car.resize(40, 20);
+    car2 = loadImage("ws_newapp_sportscar_wshadow.png");
+    car2.resize(40, 20);
+    ammoImage = loadImage("475506-200.png");
+    ammoImage.resize(20, 50);
+    ammoImage2 = loadImage("475506-200 copy 2.png");
+    ammoImage2.resize(20, 50);
+    ammoBase = loadImage("475506-200 copy.png");
+    ammoBase.resize(20, 50);
+    ghost = loadImage("ghost-png-3.png");
+    ghost.resize(50, 100);
+    frameRate(100);
+}
+
+void draw() {
+  if (ghostTransparency < 150) {
+    ghostTransparency = ghostTransparency + 1;
+  }
+  if (ghostX < -100 || ghostX > 700 || ghostY < -100 || ghostY > 700) {
+    ghostTransparency = 0;
+    ghostX = 275;
+    ghostY = 250;
+  }
+  if (ghostTransparency == 120) {
+    if (optionForGhost == 1) {
+    ghostDirection = random(-PI, PI);
+    }
+    if (optionForGhost == 0) {
+    if (killCountRed > killCountPink) {
+      ghostDirection = 1;
+    }
+    if (killCountRed < killCountPink) {
+      ghostDirection = 2;
+    }
+    if (killCountRed == killCountPink) {
+    ghostDirection = random(1, 2);
+    }
+    ghostTransparency = ghostTransparency + 1;
+    }
+  }
+  if (ghostTransparency > 120) {
+    if (optionForGhost == 1) {
+    ghostX = ghostX + cos(ghostDirection);
+    ghostY = ghostY + sin(ghostDirection);
+  }
+    if (optionForGhost == 0) {
+    if (ghostDirection < 1.5) {
+      ghostX = ghostX+1.2*(carLocationX - (ghostX+25))/sqrt(((ghostX+25) - carLocationX)*((ghostX+25) - carLocationX)+((ghostY+50) - carLocationY)*((ghostY+50) - carLocationY));
+      ghostY = ghostY+1.2*(carLocationY - (ghostY+50))/sqrt(((ghostX+25) - carLocationX)*((ghostX+25) - carLocationX)+((ghostY+50) - carLocationY)*((ghostY+50) - carLocationY));
+    }
+    if (ghostDirection >= 1.5) {
+      ghostX = ghostX+1.2*(carLocationX2 - (ghostX+25))/sqrt(((ghostX+25) - carLocationX2)*((ghostX+25) - carLocationX2)+((ghostY+50) - carLocationY2)*((ghostY+50) - carLocationY2));
+      ghostY = ghostY+1.2*(carLocationY2 - (ghostY+50))/sqrt(((ghostX+25) - carLocationX2)*((ghostX+25) - carLocationX2)+((ghostY+50) - carLocationY2)*((ghostY+50) - carLocationY2));
+    }
+    }
+  }
+  ticker = (60/pow(3, t1/200) + 24);
+  ticker2 = (60/pow(3, t2/200) + 24);
+  t1 = t1 + 1;
+  t2 = t2 + 1;
+  background(0, 0, 0);
+  image(ammoBase, 5, 420);
+  image(ammoBase, 5, 480);
+  image(ammoBase, 5, 540);
+  image(ammoBase, 40, 480);
+  image(ammoBase, 40, 540);
+  image(ammoBase, 75, 540);
+  image(ammoBase, 575-5, 420);
+  image(ammoBase, 575-5, 480);
+  image(ammoBase, 575-5, 540);
+  image(ammoBase, 575-40, 480);
+  image(ammoBase, 575-40, 540);
+  image(ammoBase, 575-75, 540);
+  if (lasersAvailable >= 1) {
+  image(ammoImage, 5, 420);
+}
+if (lasersAvailable >= 2) {
+  image(ammoImage, 5, 480);
+}
+if (lasersAvailable >= 3) {
+  image(ammoImage, 5, 540);
+}
+if (lasersAvailable >= 4) {
+  image(ammoImage, 40, 480);
+}
+if (lasersAvailable >= 5) {
+  image(ammoImage, 40, 540);
+}
+if (lasersAvailable >= 6) {
+  lasersAvailable = lasersAvailable - 6;
+  killCountRed = killCountRed + 1;
+}
+if (lasersAvailable2 >= 1) {
+  image(ammoImage2, 575-5, 420);
+}
+if (lasersAvailable2 >= 2) {
+  image(ammoImage2, 575-5, 480);
+}
+if (lasersAvailable2 >= 3) {
+  image(ammoImage2, 575-5, 540);
+}
+if (lasersAvailable2 >= 4) {
+  image(ammoImage2, 575-40, 480);
+}
+if (lasersAvailable2 >= 5) {
+  image(ammoImage2, 575-40, 540);
+}
+if (lasersAvailable2 >= 6) {
+  lasersAvailable2 = lasersAvailable2 - 6;
+  killCountPink = killCountPink + 1;
+}
+    fill(#EAB550);
+    circle(300, 300, 600);
+    fill(0, 0, 0);
+    circle(300, 300, 300);
+    fill(0);
+    strokeWeight(10);
+    stroke(255, 0, 0);
+    line(0, 300, 146, 300);
+    noStroke();
+    translate(carLocationX, carLocationY);
+    rotate(carAngle);
+    image(car, -20, -10);
+    resetMatrix();
+    translate(carLocationX2, carLocationY2);
+    rotate(carAngle2);
+    image(car2, -20, -10);
+    resetMatrix();
+    textSize(45);
+  fill(255, 0, 0);
+  text(killCountRed, 20, 50);
+  fill(255, 255, 255);
+  text(killCountPink, 550, 50);
+    carLocationDriftX = carLocationDriftX*0.975;
+    carLocationDriftY = carLocationDriftY*0.975;
+      if (((carLocationX + cos(carAngle)-300)*(carLocationX + cos(carAngle)-300) + (carLocationY + sin(carAngle)-300)*(carLocationY + sin(carAngle)-300) < 300*300) && ((carLocationX + cos(carAngle)-300)*(carLocationX + cos(carAngle)-300) + (carLocationY + sin(carAngle)-300)*(carLocationY + sin(carAngle)-300) > 150*150)) {
+      carLocationX = carLocationX + carLocationDriftX;
+      carLocationY = carLocationY + carLocationDriftY;
+      }
+      carLocationDriftX2 = carLocationDriftX2*0.975;
+    carLocationDriftY2 = carLocationDriftY2*0.975;
+      if (((carLocationX2 + cos(carAngle2)-300)*(carLocationX2 + cos(carAngle2)-300) + (carLocationY2 + sin(carAngle2)-300)*(carLocationY2 + sin(carAngle2)-300) < 300*300) && ((carLocationX2 + cos(carAngle2)-300)*(carLocationX2 + cos(carAngle2)-300) + (carLocationY2 + sin(carAngle2)-300)*(carLocationY2 + sin(carAngle2)-300) > 150*150)) {
+    carLocationX2 = carLocationX2 + carLocationDriftX2;
+    carLocationY2 = carLocationY2 + carLocationDriftY2;
+    }
+      if (beenhit2 < 0) {
+      forwardDriving();
+  }
+  else {
+    beenhit2 = beenhit2 + 1;
+    if (beenhit2 == 200) {
+      beenhit2 = -1;
+    }
+  }
+      if (beenhit < 0) {
+      forwardDriving2();
+  }
+  else {
+    beenhit = beenhit + 1;
+    if (beenhit == 200) {
+      beenhit = -1;
+    }
+  }
+      
+      if (laserT != 0) {
+        if (laserT == 1) {
+    laserX = carLocationX;
+    laserY = carLocationY;
+    laserR = carAngle;
+  }
+  laserX = laserX + 3*3*cos(laserR);
+  laserY = laserY + 3*3*sin(laserR);
+  laserT = laserT + 1;
+  strokeWeight(5);
+  stroke(255, 0, 0);
+  line(laserX, laserY, laserX + 10*cos(laserR), laserY + 10*sin(laserR));
+  noStroke();
+      }
+     if ((laserY - carLocationY2 < 10 && laserY - carLocationY2 > -10) && (laserX - carLocationX2 < 10 && laserX - carLocationX2 > -10)) {
+       killCountRed = killCountRed + 1;
+       beenhit = 1;
+       laserX = -100000000;
+       laserY = -100000000;
+     }
+     
+     if (laserT2 != 0) {
+        if (laserT2 == 1) {
+    laserX2 = carLocationX2;
+    laserY2 = carLocationY2;
+    laserR2 = carAngle2;
+  }
+  laserX2 = laserX2 + 3*3*cos(laserR2);
+  laserY2 = laserY2 + 3*3*sin(laserR2);
+  laserT2 = laserT2 + 1;
+  strokeWeight(5);
+  stroke(255, 255, 255);
+  line(laserX2, laserY2, laserX2 + 10*cos(laserR2), laserY2 + 10*sin(laserR2));
+  noStroke();
+      }
+     if ((laserY2 - carLocationY < 10 && laserY2 - carLocationY > -10) && (laserX2 - carLocationX < 10 && laserX2 - carLocationX2 > -10)) {
+       killCountPink = killCountPink + 1;
+       beenhit2 = 1;
+       laserX2 = -100000000;
+       laserY2 = -100000000;
+     }
+     
+     if (carLocationX > 300 && carLocationY <= 310 && carLocationY >= 290) {
+       checkPoint1 = 1;
+     }
+     if (carLocationX < 300 && carLocationY <= 310 && carLocationY >= 290) {
+       checkPoint2 = 1;
+     }
+     if (checkPoint1 == 1 && carLocationY > 300) {
+       checkPoint1 = 0;
+     }
+     if (checkPoint1 == 1 && checkPoint2 == 1) {
+       checkPoint1 = 0;
+       checkPoint2 = 0;
+       killCountRed++;
+       lasersAvailable = lasersAvailable + 2;
+     }
+     if (checkPoint2 == 1) {
+       checkPoint2 = 0;
+     }
+     
+          if (carLocationX2 > 300 && carLocationY2 <= 310 && carLocationY2 >= 290) {
+       checkPoint12 = 1;
+     }
+     if (carLocationX2 < 300 && carLocationY2 <= 310 && carLocationY2 >= 290) {
+       checkPoint22 = 1;
+     }
+     if (checkPoint12 == 1 && carLocationY2 > 300) {
+       checkPoint12 = 0;
+     }
+     if (checkPoint12 == 1 && checkPoint22 == 1) {
+       checkPoint12 = 0;
+       checkPoint22 = 0;
+       killCountPink++;
+       lasersAvailable2 = lasersAvailable2 + 2;
+     }
+     if (checkPoint22 == 1) {
+       checkPoint22 = 0;
+     }
+     tint(255, ghostTransparency);
+     image(ghost, ghostX, ghostY);
+     tint(255, 255);
+//}
+if (killCountPink >= 21) {
+  if (frameCount%30 == 0) {
+    if (bgcolorUse == 0) {
+      bgcolorUse = 1;
+    }
+    else {
+      bgcolorUse = 0;
+    }
+  }
+  if (bgcolorUse == 0) { 
+  background(255, 255, 255);
+  fill(0, 0, 0);
+  textAlign(CENTER);
+  text("White Wins!", 300, 300);
+  }
+  else {
+    background(0, 0, 0);
+  fill(255, 255, 255);
+  textAlign(CENTER);
+  text("White Wins!", 300, 300);
+  }
+}
+if (killCountRed >= 21) {
+  if (frameCount%30 == 0) {
+    if (bgcolorUse == 0) {
+      bgcolorUse = 1;
+    }
+    else {
+      bgcolorUse = 0;
+    }
+  }
+  if (bgcolorUse == 0) { 
+  background(255, 0, 0);
+  fill(0, 0, 0);
+  textAlign(CENTER);
+  text("Red Wins!", 300, 300);
+  }
+  if (bgcolorUse == 1) { 
+    background(0, 0, 0);
+  fill(255, 0, 0);
+  textAlign(CENTER);
+  text("Red Wins!", 300, 300);
+  }
+}
+if (ghostX < carLocationX && ghostX + 50 > carLocationX && ghostY < carLocationY && ghostY + 100 > carLocationY) {
+  lasersAvailable = 0;
+  ghostX = -200;
+  ghostY = -200;
+  beenhit2 = 1;
+}
+if (ghostX < carLocationX2 && ghostX + 50 > carLocationX2 && ghostY < carLocationY2 && ghostY + 100 > carLocationY2) {
+  lasersAvailable2 = 0;
+  ghostX = -200;
+  ghostY = -200;
+  beenhit = 1;
+}
+if (ghostX < laserX && ghostX + 50 > laserX && ghostY < laserY && ghostY + 100 > laserY) {
+  ghostX = -200;
+  ghostY = -200;
+}
+if (ghostX < laserX2 && ghostX + 50 > laserX2 && ghostY < laserY2 && ghostY + 100 > laserY2) {
+  ghostX = -200;
+  ghostY = -200;
+}
+}
+
+void keyPressed() {
+    if (keyCode == RIGHT) {
+        carAngle = carAngle + 10*3*PI/180;
+    }
+    if (keyCode == LEFT) {
+        carAngle = carAngle - 10*3*PI/180;
+    }
+    if (keyCode == UP) {
+      if (lasersAvailable > 0) {
+        lasersAvailable = lasersAvailable - 1;
+        laserT = 1;
+      }
+    }
+    if (key == 's') {
+      if (lasersAvailable2 > 0) {
+        lasersAvailable2 = lasersAvailable2 - 1;
+        laserT2 = 1;
+      }
+    }
+    if (key == 'd') {
+        carAngle2 = carAngle2 + 10*3*PI/180;
+    }
+    if (key == 'a') {
+        carAngle2 = carAngle2 - 10*3*PI/180;
+    }
+}
+
+
+void forwardDriving() {
+  if (((carLocationX + cos(carAngle)-300)*(carLocationX + cos(carAngle)-300) + (carLocationY + sin(carAngle)-300)*(carLocationY + sin(carAngle)-300) < 300*300) && ((carLocationX + cos(carAngle)-300)*(carLocationX + cos(carAngle)-300) + (carLocationY + sin(carAngle)-300)*(carLocationY + sin(carAngle)-300) > 150*150)) {
+        carLocationX = carLocationX + cos(carAngle)/ticker;
+        carLocationY = carLocationY + sin(carAngle)/ticker;
+      }
+      else {
+        t1 = 0;
+        if ((carLocationX + cos(carAngle)-300)*(carLocationX + cos(carAngle)-300) + (carLocationY + sin(carAngle)-300)*(carLocationY + sin(carAngle)-300) > 300*300) {
+        carLocationX = carLocationX+(300-carLocationX)/ticker;
+        carLocationY = carLocationY+(300-carLocationY)/ticker;
+        carLocationDriftX = carLocationDriftX+(300-carLocationX)*5/ticker/ticker;
+        carLocationDriftY = carLocationDriftY+(300-carLocationY)*5/ticker/ticker;
+        }
+        if ((carLocationX + cos(carAngle)-300)*(carLocationX + cos(carAngle)-300) + (carLocationY + sin(carAngle)-300)*(carLocationY + sin(carAngle)-300) < 150*150) {
+        carLocationX = carLocationX-(300-carLocationX)/ticker;
+        carLocationY = carLocationY-(300-carLocationY)/ticker;
+        carLocationDriftX = carLocationDriftX-(300-carLocationX)*5/ticker/ticker;
+        carLocationDriftY = carLocationDriftY-(300-carLocationY)*5/ticker/ticker;
+        }
+      }
+    //}
+        carLocationDriftX = carLocationDriftX + cos(carAngle)/ticker*2;
+        carLocationDriftY = carLocationDriftY + sin(carAngle)/ticker*2;
+}
+
+void forwardDriving2() {
+  if (((carLocationX2 + cos(carAngle2)-300)*(carLocationX2 + cos(carAngle2)-300) + (carLocationY2 + sin(carAngle2)-300)*(carLocationY2 + sin(carAngle2)-300) < 300*300) && ((carLocationX2 + cos(carAngle2)-300)*(carLocationX2 + cos(carAngle2)-300) + (carLocationY2 + sin(carAngle2)-300)*(carLocationY2 + sin(carAngle2)-300) > 150*150)) {
+        carLocationX2 = carLocationX2 + cos(carAngle2)/ticker2;
+        carLocationY2 = carLocationY2 + sin(carAngle2)/ticker2;
+      }
+      else {
+        t2 = 0;
+        if ((carLocationX2 + cos(carAngle2)-300)*(carLocationX2 + cos(carAngle2)-300) + (carLocationY2 + sin(carAngle2)-300)*(carLocationY2 + sin(carAngle2)-300) > 300*300) {
+        carLocationX2 = carLocationX2 + (300-carLocationX2)/ticker2;
+        carLocationY2 = carLocationY2 + (300-carLocationY2)/ticker2;
+        carLocationDriftX2 = carLocationDriftX2+(300-carLocationX2)*5/ticker2/ticker2;
+        carLocationDriftY2 = carLocationDriftY2+(300-carLocationY2)*5/ticker2/ticker2;
+        }
+        if ((carLocationX2 + cos(carAngle2)-300)*(carLocationX2 + cos(carAngle2)-300) + (carLocationY2 + sin(carAngle2)-300)*(carLocationY2 + sin(carAngle2)-300) < 150*150) {
+        carLocationX2 = carLocationX2-(300-carLocationX2)/ticker2;
+        carLocationY2 = carLocationY2-(300-carLocationY2)/ticker2;
+        carLocationDriftX2 = carLocationDriftX2-(300-carLocationX2)*5/ticker2/ticker2;
+        carLocationDriftY2 = carLocationDriftY2-(300-carLocationY2)*5/ticker2/ticker2;
+        }
+      }
+    //}
+        carLocationDriftX2 = carLocationDriftX2 + cos(carAngle2)/ticker2*2;
+        carLocationDriftY2 = carLocationDriftY2 + sin(carAngle2)/ticker2*2;
+}
